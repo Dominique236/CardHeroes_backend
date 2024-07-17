@@ -1,7 +1,7 @@
-import Koa from "koa";
-import KoaLogger from "koa-logger";
-import { koaBody } from "koa-body";
-import router from "./routes.js";
+const Koa = require('koa');
+const KoaLogger = require('koa-logger');
+const { koaBody } = require('koa-body');
+const router = require('./routes.js');
 
 // Crear instancia de Koa
 const app = new Koa();

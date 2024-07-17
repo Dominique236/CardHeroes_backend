@@ -2,7 +2,7 @@
   "name": "CardHeroes_backend",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
+  "type": "commonjs",
   "repository": "https://github.com/Dominique236/CardHeroes_backend.git",
   "author": "Dominique236 <dominique.soto@uc.cl>",
   "license": "MIT",
