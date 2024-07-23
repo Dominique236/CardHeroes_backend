@@ -1,0 +1,41 @@
+module.exports = {
+  up: (queryInterface) => queryInterface.bulkInsert('Personajes', [
+    {
+      nombre: 'Inferna',
+      alias: 'La Llama Eterna',
+      elemento: 'Fuego',
+      color: 'Rojo',
+      descripcion_habilidad: 'Inferna puede desatar Fuego Ascendente, que permite subir el nivel de una carta propia elegida o bajar el nivel de una carta al azar del oponente.',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      nombre: 'Aquos',
+      alias: 'El Guardián de las Mareas',
+      elemento: 'Agua',
+      color: 'Celeste',
+      descripcion_habilidad: 'Aquos puede utilizar Cambio de Corriente, que permite intercambiar el elemento de una carta propia elegida o de una carta al azar del oponente.',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      nombre: 'Aeria',
+      alias: 'La Brisa Celestial',
+      elemento: 'Aire',
+      color: 'Amarillo',
+      descripcion_habilidad: 'Aeria puede activar Ráfaga del Destino, que le permite ganar una carta al azar o eliminar una carta al azar del oponente.',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      nombre: 'Terrax',
+      alias: 'El Coloso Terrenal',
+      elemento: 'Tierra',
+      color: 'Verde',
+      descripcion_habilidad: 'Terrax puede invocar Intercambio Terrenal, que le permite intercambiar una carta propia elegida con una carta del mazo o con una carta del oponente.',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ]),
+  down: (queryInterface) => queryInterface.bulkDelete('Personajes', null, {}),
+};
