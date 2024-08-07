@@ -10,16 +10,20 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       nombre: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       correo: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique: true
       },
       contrasena: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       victorias: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,

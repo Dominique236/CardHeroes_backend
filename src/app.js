@@ -19,7 +19,7 @@ app.use(router.routes());
 
 // Middleware personalizado. Encargado de dar respuesta "Hola Mundo!"
 app.use((ctx, next) => {
-  ctx.body = "Hola Mundo! Saludos desde Card Heroes";
+  ctx.body = "Hola Mundo! Saludos desde CardHeroes";
 });
 
 module.exports = app;

@@ -1,8 +1,10 @@
 const Router = require('koa-router');
-const characters = require('./routes/characters');
+const personajes = require('./routes/personajes');
+const usuarios = require('./routes/usuarios');
 
 const router = new Router();
 
-router.use('/characters', characters.routes());
+router.use('/personajes', personajes.routes());
+router.use('/usuarios', usuarios.routes());
 
 module.exports = router;

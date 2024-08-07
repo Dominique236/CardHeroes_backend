@@ -20,7 +20,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   Usuario.init({
     nombre: DataTypes.STRING,
-    correo: DataTypes.STRING,
+    correo: {
+      type:DataTypes.STRING,
+      validate: {
+        isEmail: {
+          msg: 'correo debe cumplir formato de email'
+        }
+      }
+    },
     contrasena: DataTypes.STRING,
     victorias: DataTypes.INTEGER
   }, {
