@@ -2,7 +2,7 @@ const Router = require('koa-router');
 
 const router = new Router();
 
-// Al seleccionar una carta se muestra su tipo y nivel.
+// Al seleccionar una carta se muestra su tipo y nivel
 // Entrega nivel de la carta y nombre del elemento, según su parametro id entregado en la ruta
 router.get("carta.show", "/:id", async (ctx) => {
     try {
@@ -56,16 +56,15 @@ router.post("cartas.create", "/:nombre/:id_arcano", async (ctx) => {
             ctx.status = 404;
             return;
         }
-        // Asignar arcano al jugador
+        // Asignar personaje al jugador
         if (jugador) {
-            jugador.arcanoId = ctx.params.id_arcano;
+            jugador.personajeId = ctx.params.id_arcano;
             await jugador.save();
         }
         // Encuentra la partida de ese jugador
         const partida = await ctx.orm.Partida.findOne({
             where: {id:jugador.partidaId}
         });
-
         if (!partida) {
             console.log(`Partida con id ${partida.id} no encontrada`);
             ctx.body = { error: "Partida no encontrada" };
@@ -76,6 +75,12 @@ router.post("cartas.create", "/:nombre/:id_arcano", async (ctx) => {
         const jugadores = await ctx.orm.Jugador.findAll({
             where: {partidaId:partida.id}
         });
+        if (!jugadores) {
+            console.log(`Jugadores no encontrados`);
+            ctx.body = { error: "Jugadores no encontrados" };
+            ctx.status = 404;
+            return;
+        }
         const jugadorConCartas = await ctx.orm.CartaJugador.findOne({
             where: {jugadorId:jugador.id}
         });
@@ -89,9 +94,15 @@ router.post("cartas.create", "/:nombre/:id_arcano", async (ctx) => {
             const cartas = await ctx.orm.Carta.findAll();
             const shuffledCartas = cartas.sort(() => 0.5 - Math.random()); //baraja las cartas de forma aleatoria
 
-            // Asignar a cada jugador 6 cartas al azar (relación CartaJugador) 
-            const cartasPorJugador = 6;
+            // Asignar a cada jugador 10 cartas al azar (relación CartaJugador) 
+            const cartasPorJugador = 10;
             const cartasJugadorCreadas = [];
+
+            if (shuffledCartas.length < jugadores.length * cartasPorJugador) {
+                ctx.body = { error: "No hay suficientes cartas para repartir" };
+                ctx.status = 401;
+                return;
+            }            
             
             for (const jugador of jugadores) {
                 // Obtener las cartas necesarias para el jugador
@@ -108,13 +119,15 @@ router.post("cartas.create", "/:nombre/:id_arcano", async (ctx) => {
             // Respuesta
             ctx.body = {
                 message: "Se asignaron correctamente las cartas",
-                cartasJugador: cartasJugadorCreadas,
-                cartasPartida: cartasPartidaCreadas
+                cartasJugador: cartasJugadorCreadas
             };
             ctx.status = 201;
         }
     } catch(error){
-        ctx.body = error;
+        ctx.body = {
+            error: "Ocurrió un error inesperado",
+            details: error.message
+        };
         ctx.status = 400;
     }
 });
@@ -169,6 +182,96 @@ router.get("cartas.find", "/find/:nombre", async (ctx) => {
             message: "Mira tus cartas obtenidas!",
             cartas: cartas
         };
+        ctx.status = 200;
+    } catch(error){
+        ctx.body = error;
+        ctx.status = 400;
+    }
+});
+
+// Revisar que carta es la ganadora
+router.get("carta.win", "/win/:id/:id_oponente", async (ctx) => {
+    try {
+        // Encuentra la carta que coincide con el id y id_oponente
+        const carta = await ctx.orm.Carta.findOne({
+            where: {id:ctx.params.id},
+            include: [{
+                model: ctx.orm.Elemento
+            }]// Incluye el modelo de Elemento para obtener su nombre
+        });
+        if (!carta) {
+            ctx.status = 404;
+            ctx.body = { message: "Carta no encontrada" };
+        }
+        const carta_oponente = await ctx.orm.Carta.findOne({
+            where: {id:ctx.params.id_oponente},
+            include: [{
+                model: ctx.orm.Elemento
+            }]// Incluye el modelo de Elemento para obtener su nombre
+        });
+        if (!carta_oponente) {
+            ctx.status = 404;
+            ctx.body = { message: "Carta no encontrada" };
+        }
+        // Reglas para determinar qué carta gana
+        const elementoJugador = carta.Elemento.nombre;
+        const elementoOponente = carta_oponente.Elemento.nombre;
+        let resultado = "";
+        // Determinar el ganador según las reglas
+        // Si elemento.nombre es Fuego le gana a Tierra 
+        // Si elemento.nombre es Agua le gana a Fuego y Aire
+        // Si elemento.nombre es Aire le gana a Tierra y Fuego
+        // Si elemento.nombre es Tierra le gana a Agua
+        if (elementoJugador === "Fuego") {
+            if (elementoOponente === "Tierra") {
+                resultado = "Tu carta gana";
+            } else if (elementoOponente === "Agua" || elementoOponente === "Aire") {
+                resultado = null;
+            } else if (elementoOponente === "Fuego") {
+                // Gana el que tenga mayor nivel
+                if (carta.nivel > carta_oponente.nivel) {
+                    resultado = "Tu carta gana";
+                } else {
+                    resultado = null; }
+            }
+        } else if (elementoJugador === "Agua") {
+            if (elementoOponente === "Fuego" || elementoOponente === "Aire") {
+                resultado = "Tu carta gana";
+            } else if (elementoOponente === "Tierra") {
+                resultado = null;
+            } else if (elementoOponente === "Agua") {
+                // Gana el que tenga mayor nivel
+                if (carta.nivel > carta_oponente.nivel) {
+                    resultado = "Tu carta gana";
+                } else {
+                    resultado = null; }
+            }
+        } else if (elementoJugador === "Aire") {
+            if (elementoOponente === "Fuego" || elementoOponente === "Tierra") {
+                resultado = "Tu carta gana";
+            } else if (elementoOponente === "Agua") {
+                resultado = null;
+            } else if (elementoOponente === "Aire") {
+                // Gana el que tenga mayor nivel
+                if (carta.nivel > carta_oponente.nivel) {
+                    resultado = "Tu carta gana";
+                } else {
+                    resultado = null; }
+            }
+        } else if (elementoJugador === "Tierra") {
+            if (elementoOponente === "Agua") {
+                resultado = "Tu carta gana";
+            } else if (elementoOponente === "Fuego" || elementoOponente === "Aire") {
+                resultado = null;
+            } else if (elementoOponente === "Tierra") {
+                // Gana el que tenga mayor nivel
+                if (carta.nivel > carta_oponente.nivel) {
+                    resultado = "Tu carta gana";
+                } else {
+                    resultado = null; }
+            }
+        }
+        ctx.body = { resultado };
         ctx.status = 200;
     } catch(error){
         ctx.body = error;

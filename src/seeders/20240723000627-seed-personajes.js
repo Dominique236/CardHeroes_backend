@@ -32,7 +32,7 @@ module.exports = {
       alias: 'El Coloso Terrenal',
       elemento: 'Tierra',
       color: 'Verde',
-      descripcion_habilidad: 'Terrax puede invocar Intercambio Terrenal, que le permite intercambiar una carta propia elegida con una carta del mazo o con una carta del oponente.',
+      descripcion_habilidad: 'Terrax puede invocar Intercambio Terrenal, que le permite intercambiar una carta propia elegida con una carta del mazo o una carta del oponente con una del mazo.',
       createdAt: new Date(),
       updatedAt: new Date(),
     },

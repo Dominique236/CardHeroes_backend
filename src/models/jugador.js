@@ -28,7 +28,12 @@ module.exports = (sequelize, DataTypes) => {
     usuarioId: DataTypes.INTEGER,
     partidaId: DataTypes.INTEGER,
     personajeId: DataTypes.INTEGER,
-    estrellas: DataTypes.INTEGER
+    estrellas: DataTypes.INTEGER,
+    vidas: DataTypes.INTEGER,
+    atacado: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false, 
+    },
   }, {
     sequelize,
     modelName: 'Jugador',

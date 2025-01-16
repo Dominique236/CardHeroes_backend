@@ -2,34 +2,27 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Jugadors', {
+    await queryInterface.createTable('Jugadas', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      usuarioId: {
-        type: Sequelize.INTEGER,
-        references: { model: 'Usuarios', key: 'id' },
-      },
-      partidaId: {
-        type: Sequelize.INTEGER,
-        references: { model: 'Partidas', key: 'id' }, 
-      },
-      personajeId: {
-        type: Sequelize.INTEGER,
-        references: { model: 'Personajes', key: 'id' }, 
-      },
-      estrellas: {
+      jugadorId: {
         type: Sequelize.INTEGER
       },
-      vidas: {
+      ronda: {
         type: Sequelize.INTEGER
       },
-      atacado: { 
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
+      carta_1: {
+        type: Sequelize.INTEGER
+      },
+      carta_2: {
+        type: Sequelize.INTEGER
+      },
+      carta_3: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -42,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Jugadors');
+    await queryInterface.dropTable('Jugadas');
   }
 };
