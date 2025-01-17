@@ -35,6 +35,7 @@ router.post("partidas.create", "/:id_espera/:selected_tablero", async (ctx) => {
                     personajeId: null,
                     estrellas: 0,
                     vidas: 3,
+                    atacado: false
                 });
                 // Crear jugada de primera ronda (ronda, jugadorId, carta_1, carta_2, carta_3)
                 await ctx.orm.Jugada.create({
@@ -98,7 +99,7 @@ router.post("partidas.create", "/:id_espera/:selected_tablero", async (ctx) => {
         ctx.status = 201;
     } catch (error) {
         console.log(`Error: ${error}`);
-        ctx.body = { error: "Error al obtener el usuario" };
+        ctx.body = { error: "Error al crear la partida" };
         ctx.status = 400;
     }
 });
