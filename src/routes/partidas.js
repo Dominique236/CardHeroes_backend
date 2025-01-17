@@ -312,9 +312,13 @@ router.get("partidas.ganador", "/ganador/:nombre/:id_oponente", async (ctx) => {
         }
         let ganador = null;
         if (jugador.vidas < 1) {
-            ganador = jugador_oponente.Usuario.nombre
+            ganador = jugador_oponente.Usuario.nombre;
+            jugador_oponente.Usuario.victorias += 1;
+            await jugador_oponente.Usuario.save(); 
         } else if (jugador_oponente.vidas < 1) {
-            ganador = jugador.Usuario.nombre
+            ganador = jugador.Usuario.nombre;
+            jugador.Usuario.victorias += 1;
+            await jugador.Usuario.save();
         } 
         
         ctx.body = { ganador };
